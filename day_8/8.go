@@ -5,18 +5,15 @@ import (
 	"strings"
 	"strconv"
 )
-const FILE_PATH string = "./input5.txt"
+const FILE_PATH string = "./input.txt"
 
-func main(){
-	count := 0
+func getTreeArray()[][]int{
 	content, err := ioutil.ReadFile(FILE_PATH)
 	if err != nil{
 		fmt.Printf("Error reading file: %v", err)
 	}
 	lines :=  strings.Split(string(content), "\n")
-
-	var multiArray [][]int
-
+	var my_array [][]int
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line != ""{
@@ -30,9 +27,20 @@ func main(){
 				}
 				intArray[index] =num
 			}
-			multiArray = append(multiArray, intArray)
+			my_array = append(my_array, intArray)
 		}
 	}
+	return my_array;
+
+}
+
+func main(){
+	count := 0
+	
+	multiArray := getTreeArray()
+	multiArray2 := getTreeArray()
+
+	
 
 	highestCountTop := multiArray[0]
 	highestCountBottom := multiArray[len(multiArray)-1]
@@ -44,8 +52,6 @@ func main(){
 	}
 	
 	treesMap := make(map[string]int)
-
-	
 
 	for i := len(multiArray) -2; i >= 1; i--{
 		for j := len(multiArray[i]) -2; j >= 1; j--{
@@ -70,6 +76,8 @@ func main(){
 			}
 		}
 	}
+
+
 	
 
 	// checking top
@@ -96,6 +104,8 @@ func main(){
 			}
 		}
 	}
+	
+
 
 	lengthX := (len(multiArray[0])) * 2
 	lengthY := (len(multiArray) -2) * 2
@@ -108,53 +118,52 @@ func main(){
 	location_j := 0
 	
 
-	fmt.Println(multiArray)
 	// part two calcualte the senic point
-	for i := 1; i <= len(multiArray)-2; i++{
-		for j := 1; j <= len(multiArray[i])-2; j++{
+	for i := 1; i <= len(multiArray2)-2; i++{
+		for j := 1; j <= len(multiArray2[i])-2; j++{
 			
-			current_tree := multiArray[i][j]
+			current_tree := multiArray2[i][j]
 			view_count := 0
-			fmt.Println(current_tree)
+			top_count := 0
+			bottom_count := 0
+			left_count := 0
+			right_count := 0
 			for a:= i-1; a >=0; a--{
-				fmt.Println("view count",view_count)
-				fmt.Println("a",a)
-				fmt.Println("j value",j)
-				fmt.Println("array vlaue",multiArray[a][j])
-				if(current_tree <= multiArray[a][j]){
-					view_count += 1
+				if(current_tree <= multiArray2[a][j]){
+					top_count += 1
 					break
 				}else{
-					view_count += 1
+					top_count += 1
 				}
 			}
-			// for b:= i+1; b < len(multiArray); b++{
-			// 	if(current_tree <= multiArray[b][j]){
-			// 		view_count += 1
-			// 		break
-			// 	}else{
-			// 		view_count += 1
-			// 	}
-				
-			// }
-			// for c:= j-1; c >=0; c--{
-			// 	if(current_tree <= multiArray[i][c]){
-			// 		view_count += 1
-			// 		break
-			// 	}else{
-			// 		view_count += 1
-			// 	}
-			// }
-			// for d:= j+1; d < len(multiArray); d++{
-			// 	if(current_tree <= multiArray[i][d]){
-			// 		view_count += 1
-			// 		break
-			// 	}else{
-			// 		view_count += 1
-			// 	}
-				
-			// }
 
+			for b:= i+1; b < len(multiArray2); b++{
+				if(current_tree <= multiArray2[b][j]){
+					bottom_count += 1
+					break
+				}else{
+					bottom_count += 1
+				}
+				
+			}
+			for c:= j-1; c >=0; c--{
+				if(current_tree <= multiArray2[i][c]){
+					left_count += 1
+					break
+				}else{
+					left_count += 1
+				}
+			}
+			for d:= j+1; d < len(multiArray2); d++{
+				if(current_tree <= multiArray2[i][d]){
+					right_count += 1
+					break
+				}else{
+					right_count += 1
+				}
+				
+			}
+			view_count = left_count * right_count * top_count * bottom_count
 			if(view_count > highest_point){
 				location_i = i
 				location_j = j
